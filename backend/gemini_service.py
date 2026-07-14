@@ -63,6 +63,7 @@ def generate_json(system_prompt: str, user_prompt: str, demo_fallback: Dict[str,
             config=genai_types.GenerateContentConfig(
                 temperature=0.4,
                 response_mime_type="application/json",
+                max_output_tokens=4096,
             ),
         )
         print("RAW GEMINI OUTPUT:", response.text)
