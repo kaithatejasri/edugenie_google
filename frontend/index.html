@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduGenie — Learn smarter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="dust-layer" id="dustLayer" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="wordmark">
+    <span class="wordmark-main">EduGenie</span>
+    <span class="wordmark-tag">an idea, summoned</span>
+  </div>
+ <div class="header-right">
+  <div class="status-pill" id="statusPill">checking status…</div>
+  <div id="authArea" class="auth-area"></div>
+</div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-board">
+      <svg class="chalk-eq" viewBox="0 0 420 160" aria-hidden="true">
+        <path class="chalk-stroke" d="M40 120 L100 40" />
+        <path class="chalk-stroke" d="M100 40 L160 120" />
+        <path class="chalk-stroke" d="M40 120 L160 120" />
+        <text x="20" y="145" class="chalk-label">a</text>
+        <text x="150" y="145" class="chalk-label">b</text>
+        <text x="95" y="35" class="chalk-label">c</text>
+        <text x="210" y="90" class="chalk-formula">a² + b² = c²</text>
+      </svg>
+    </div>
+    <h1 class="hero-title">Ask a question.<br>Get more than an answer.</h1>
+    <p class="hero-sub">EduGenie explains concepts, builds quizzes, condenses long readings, and maps out what to learn next — grounded in what you're actually studying.</p>
+  </section>
+
+  <nav class="tab-nav" role="tablist" aria-label="EduGenie features">
+  <button class="tab-btn is-active" data-tab="ask" role="tab" aria-selected="true">
+    <span class="tab-num">01</span> Ask
+  </button>
+  <button class="tab-btn" data-tab="quiz" role="tab" aria-selected="false">
+    <span class="tab-num">02</span> Quiz me
+  </button>
+  <button class="tab-btn" data-tab="summarize" role="tab" aria-selected="false">
+    <span class="tab-num">03</span> Summarize
+  </button>
+  <button class="tab-btn" data-tab="path" role="tab" aria-selected="false">
+    <span class="tab-num">04</span> Learning path
+  </button>
+  <button class="tab-btn" data-tab="history" role="tab" aria-selected="false">
+    <span class="tab-num">05</span> History
+  </button>
+</nav>
+
+  <!-- ASK PANEL -->
+  <section class="panel is-active" id="panel-ask" role="tabpanel">
+    <form class="form-row" id="form-ask">
+      <div class="field field-grow">
+        <label for="ask-question">Your question</label>
+        <input id="ask-question" type="text" placeholder="Which is the largest ocean?" required>
+      </div>
+      <div class="field">
+        <label for="ask-subject">Subject <span class="optional">(optional)</span></label>
+        <input id="ask-subject" type="text" placeholder="Geography">
+      </div>
+      <button type="submit" class="btn-summon">Ask EduGenie</button>
+    </form>
+    <div class="result-area" id="result-ask"></div>
+  </section>
+
+  <!-- QUIZ PANEL -->
+  <section class="panel" id="panel-quiz" role="tabpanel">
+    <form class="form-row" id="form-quiz">
+      <div class="field field-grow">
+        <label for="quiz-topic">Topic</label>
+        <input id="quiz-topic" type="text" placeholder="Pythagoras Theorem" required>
+      </div>
+      <div class="field">
+        <label for="quiz-difficulty">Difficulty</label>
+        <select id="quiz-difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <div class="field field-narrow">
+        <label for="quiz-count">Questions</label>
+        <input id="quiz-count" type="number" min="1" max="15" value="5">
+      </div>
+      <button type="submit" class="btn-summon">Generate quiz</button>
+    </form>
+    <div class="result-area" id="result-quiz"></div>
+  </section>
+
+  <!-- SUMMARIZE PANEL -->
+  <section class="panel" id="panel-summarize" role="tabpanel">
+    <form class="form-col" id="form-summarize">
+      <div class="field">
+        <label for="sum-text">Paste your text</label>
+        <textarea id="sum-text" rows="8" placeholder="Paste an article, chapter, or notes to condense…" required></textarea>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="sum-length">Summary length</label>
+          <select id="sum-length">
+            <option value="short">Short</option>
+            <option value="medium" selected>Medium</option>
+            <option value="long">Long</option>
+          </select>
+        </div>
+        <button type="submit" class="btn-summon">Summarize</button>
+      </div>
+    </form>
+    <div class="result-area" id="result-summarize"></div>
+  </section>
+
+  <!-- LEARNING PATH PANEL -->
+  <section class="panel" id="panel-path" role="tabpanel">
+    <form class="form-row" id="form-path">
+      <div class="field field-grow">
+        <label for="path-topic">What do you want to learn?</label>
+        <input id="path-topic" type="text" placeholder="SQL" required>
+      </div>
+      <div class="field">
+        <label for="path-level">Current level</label>
+        <select id="path-level">
+          <option value="beginner" selected>Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+      <div class="field field-grow">
+        <label for="path-goal">Goal <span class="optional">(optional)</span></label>
+        <input id="path-goal" type="text" placeholder="Pass a job interview">
+      </div>
+      <button type="submit" class="btn-summon">Build my path</button>
+    </form>
+    <div class="result-area" id="result-path"></div>
+  </section>
+<!-- HISTORY PANEL -->
+  <section class="panel" id="panel-history" role="tabpanel">
+    <div id="historyLoggedOut" class="card" style="display:none;">
+      <h3>Log in to see your history</h3>
+      <p>Your past questions, quizzes, summaries, and learning paths will appear here once you're logged in.</p>
+    </div>
+    <div class="result-area" id="result-history"></div>
+  </section>
+</main>
+</main>
+
+<footer class="site-footer">
+  <p>EduGenie — built with FastAPI + Gemini. <span id="demoNotice" class="demo-notice"></span></p>
+</footer>
+
+<div class="modal-overlay" id="authModal" style="display:none;">
+  <div class="modal-box">
+    <h3 id="authModalTitle">Log in</h3>
+    <div class="field">
+      <label for="auth-username">Username</label>
+      <input id="auth-username" type="text" placeholder="yourname">
+    </div>
+    <div class="field">
+      <label for="auth-password">Password</label>
+      <input id="auth-password" type="password" placeholder="••••••••">
+    </div>
+    <p class="auth-error" id="authError"></p>
+    <div class="modal-actions">
+      <button class="btn-summon" id="authSubmitBtn">Log in</button>
+      <button class="btn-ghost" id="authSwitchBtn">Need an account? Register</button>
+      <button class="btn-ghost" id="authCloseBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+<script src="/static/script.js"></script>
+</body>
+</html>
