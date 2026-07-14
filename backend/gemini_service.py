@@ -54,7 +54,8 @@ def generate_json(system_prompt: str, user_prompt: str, demo_fallback: Dict[str,
     try:
         full_prompt = (
             f"{system_prompt}\n\n"
-            "Respond with ONLY a valid JSON object. No markdown fences, no preamble, no commentary.\n\n"
+            "Respond with ONLY a valid JSON object. No markdown fences, no preamble, no commentary. "
+            "Keep every explanation or context field to 1-2 concise sentences.\n\n"
             f"{user_prompt}"
         )
         response = _client.models.generate_content(
@@ -63,7 +64,7 @@ def generate_json(system_prompt: str, user_prompt: str, demo_fallback: Dict[str,
             config=genai_types.GenerateContentConfig(
                 temperature=0.4,
                 response_mime_type="application/json",
-                max_output_tokens=4096,
+                max_output_tokens=8192,
             ),
         )
         print("RAW GEMINI OUTPUT:", response.text)
