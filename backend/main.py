@@ -117,16 +117,23 @@ def health():
 @app.post("/api/ask", response_model=AskResponse)
 def ask_question(req: AskRequest, authorization: str = Header(None)):
     user = get_current_user(authorization)
+    subject = req.subject or "this subject"
     demo_fallback = {
         "answer": (
-            "The Pacific Ocean is the largest and deepest ocean on Earth, covering "
-            "about 63 million square miles -- more than all of Earth's land area combined."
+            f"Here's a quick overview of \"{req.question}\" ({subject}): this is a "
+            "demo-mode response, since the live AI service is temporarily unavailable. "
+            "In normal operation, EduGenie would generate a full, tailored answer here."
         ),
         "context": (
-            "It stretches from the Arctic in the north to the Southern Ocean near "
-            "Antarctica, and separates Asia and Australia from the Americas."
+            f"Once the AI service is reachable again, this section will explain how "
+            f"\"{req.question}\" connects to the broader ideas in {subject}."
         ),
-        "related_topics": ["Atlantic Ocean", "Ocean currents", "Marine ecosystems", "Plate tectonics"],
+        "related_topics": [
+            f"Fundamentals of {subject}",
+            f"Common questions about {subject}",
+            "Related concepts",
+            "Practice exercises",
+        ],
     }
     result = ai.generate_json(
         system_prompt=(
@@ -150,17 +157,24 @@ def ask_question(req: AskRequest, authorization: str = Header(None)):
 @app.post("/api/quiz", response_model=QuizResponse)
 def generate_quiz(req: QuizRequest, authorization: str = Header(None)):
     user = get_current_user(authorization)
+    base_question = {
+        "question": f"(Demo mode) Sample {req.difficulty} question about {req.topic}",
+        "options": [
+            f"Correct answer about {req.topic}",
+            f"Distractor A for {req.topic}",
+            f"Distractor B for {req.topic}",
+            f"Distractor C for {req.topic}",
+        ],
+        "correct_answer": f"Correct answer about {req.topic}",
+        "explanation": (
+            f"This is placeholder content shown because the live AI service is "
+            f"temporarily unavailable. A real quiz on {req.topic} will appear once it's back."
+        ),
+    }
     demo_fallback = {
         "topic": req.topic,
         "difficulty": req.difficulty,
-        "questions": [
-            {
-                "question": "In a right triangle, if the two legs are 3 and 4, what is the hypotenuse?",
-                "options": ["5", "6", "7", "8"],
-                "correct_answer": "5",
-                "explanation": "By the Pythagoras theorem, c = sqrt(3^2 + 4^2) = sqrt(25) = 5.",
-            },
-        ][: req.num_questions] or [],
+        "questions": [base_question for _ in range(max(req.num_questions, 1))],
     }
     result = ai.generate_json(
         system_prompt=(
@@ -186,12 +200,17 @@ def generate_quiz(req: QuizRequest, authorization: str = Header(None)):
 def summarize_text(req: SummarizeRequest, authorization: str = Header(None)):
     user = get_current_user(authorization)
     word_count = len(req.text.split())
+    snippet = req.text.strip()[:60] + ("..." if len(req.text.strip()) > 60 else "")
     demo_fallback = {
         "summary": (
-            "This passage explains a core concept in clear terms, covering its definition, "
-            "why it matters, and how it connects to related ideas in the subject."
+            f"(Demo mode) This would be a {req.length} summary of the text you provided, "
+            f"starting with: \"{snippet}\". The live AI service is temporarily unavailable."
         ),
-        "key_points": ["Defines the main concept", "Explains its significance", "Connects it to related topics"],
+        "key_points": [
+            "Live summarization is temporarily unavailable",
+            f"Your original text was {word_count} words long",
+            "A real summary will appear once the AI service is back",
+        ],
         "word_count_original": word_count,
         "word_count_summary": 24,
     }

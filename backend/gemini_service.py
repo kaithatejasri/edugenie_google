@@ -23,10 +23,10 @@ MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-flash-latest")
 _demo_mode = not API_KEY
 
 if not _demo_mode:
-    import google.generativeai as genai
+    from google import genai
+    from google.genai import types as genai_types
 
-    genai.configure(api_key=API_KEY)
-    _model = genai.GenerativeModel(MODEL_NAME)
+    _client = genai.Client(api_key=API_KEY)
 
 
 def is_demo_mode() -> bool:
@@ -57,9 +57,13 @@ def generate_json(system_prompt: str, user_prompt: str, demo_fallback: Dict[str,
             "Respond with ONLY a valid JSON object. No markdown fences, no preamble, no commentary.\n\n"
             f"{user_prompt}"
         )
-        response = _model.generate_content(
-            full_prompt,
-            generation_config={"temperature": 0.4, "response_mime_type": "application/json"},
+        response = _client.models.generate_content(
+            model=MODEL_NAME,
+            contents=full_prompt,
+            config=genai_types.GenerateContentConfig(
+                temperature=0.4,
+                response_mime_type="application/json",
+            ),
         )
         print("RAW GEMINI OUTPUT:", response.text)
         return _extract_json(response.text)
