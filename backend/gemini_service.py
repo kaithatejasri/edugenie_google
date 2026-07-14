@@ -34,14 +34,21 @@ def is_demo_mode() -> bool:
 
 
 def _extract_json(raw_text: str) -> Dict[str, Any]:
-    """Gemini sometimes wraps JSON in markdown fences or adds stray trailing
-    characters; strip fences, then parse just the first valid JSON object
-    and ignore anything extra after it."""
+    """Gemini sometimes wraps JSON in markdown fences, adds stray trailing
+    characters, or (occasionally) cuts off the very last closing brace.
+    Strip fences, try parsing as-is, and if that fails, attempt to repair
+    by balancing any unclosed brackets/braces before parsing again."""
     cleaned = re.sub(r"^```(json)?|```$", "", raw_text.strip(), flags=re.MULTILINE).strip()
     decoder = json.JSONDecoder()
-    obj, _ = decoder.raw_decode(cleaned)
-    return obj
-
+    try:
+        obj, _ = decoder.raw_decode(cleaned)
+        return obj
+    except json.JSONDecodeError:
+        open_brackets = cleaned.count("[") - cleaned.count("]")
+        open_braces = cleaned.count("{") - cleaned.count("}")
+        repaired = cleaned + ("]" * max(open_brackets, 0)) + ("}" * max(open_braces, 0))
+        obj, _ = decoder.raw_decode(repaired)
+        return obj
 
 def generate_json(system_prompt: str, user_prompt: str, demo_fallback: Dict[str, Any]) -> Dict[str, Any]:
     """
